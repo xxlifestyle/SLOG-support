@@ -15,7 +15,7 @@ const Main = () => {
     return (
 <div className={'chat-bg'}>
     <div className={'header-fake'}></div>
-        <Container class={'chat-box_container'} maxWidth="xl">
+        <Container className={'chat-box_container'} maxWidth="xl">
 
 <div>
     {chatData.map(data => <div key={data.id} className={'char-item'}>

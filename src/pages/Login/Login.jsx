@@ -27,9 +27,9 @@ function Login() {
     };
 
 
-    function login() {
+  async  function login() {
         if (codeSendHolder == false) {
-            API.post('accounts/auth/admin/admin/', {
+         await   API.post('accounts/auth/admin/admin/', {
                 phone: loginHolder,
                 otc: passwordHolder
             })
@@ -38,18 +38,22 @@ function Login() {
                     setSnackbarStatus(true)
                 })
         } else {
-            API.post('accounts/auth/admin/admin/', {
+         await   API.post('accounts/auth/admin/admin/', {
                 phone: loginHolder,
                 otc: passwordHolder
             })
-                .then((response) => {
-                    localStorage.token = response.data.token
-                    if(localStorage.token != null && localStorage.token != undefined ){
-                        navigate("/", { replace: true });
-                    } else{
-                        navigate("/login", { replace: true });
+                .then(async (response) => {
+                    await window.localStorage.setItem('token', response.data.token);
+                    if (localStorage.token != null && localStorage.token != undefined) {
+                        navigate("/");
+                    } else {
+                        navigate("/login");
                     }
                 })
+             .catch((e)=>{
+                 console.log(e)
+                 return
+             })
         }
     }
 
