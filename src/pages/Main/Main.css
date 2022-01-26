@@ -7,11 +7,48 @@
 .chat-box_container{
 background-color: white;
     width: 90% !important;
-    align-items: center;
-    margin: 0 auto;
-margin-top: -80px;
+    max-height: 96vh;
+    margin: -80px auto 0;
+    font-family:'Roboto', sans-serif;
+    display: flex !important;
+    justify-content: stretch;
+    padding: 0 !important;
 }
 .chat-bg{
     background-color: rgb(227,226,222);
     height: 100vh;
 }
+.text-form{
+    display: flex;
+    align-items: center;
+}
+
+.chat-item{
+    display: flex;
+    align-items: center;
+    height: 60px;
+}
+.chat-item:hover{
+background-color: rgba(0, 0, 0, 0.15);
+}
+
+.chat-block{
+    width: 30%;
+    overflow: auto;
+}
+.mess-block{
+    width: 70% !important;
+
+}
+.chat-img img{
+    border-radius: 50% !important;
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+}
+.chat-img img{
+    margin-right: 8px;
+    margin-left:8px ;
+}
+
+

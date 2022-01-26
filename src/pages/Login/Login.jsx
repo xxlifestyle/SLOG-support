@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./Login.css"
 import {Alert, Button, Snackbar, styled, TextField} from "@mui/material";
 import icon from "../../icon.png"
 import API from "../../api";
 import { useNavigate } from "react-router-dom";
+
+
 
 
 function Login() {
@@ -13,6 +15,12 @@ function Login() {
     let [snackbarStatus, setSnackbarStatus] = useState(false)
     const navigate = useNavigate()
 
+
+    useEffect( ()=>{
+        if (localStorage.token !== undefined && localStorage.token !== null){
+          navigate("/");
+        }
+    })
 
     const handleClick = () => {
         setSnackbarStatus(true);
