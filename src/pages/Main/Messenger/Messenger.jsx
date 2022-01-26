@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef } from "react";
 import styles from "./Messenger.css"
 import sent from "../../../send.svg"
 import api from "../../../api";
@@ -19,16 +19,29 @@ function Messenger(props) {
             text:newMessage,
         })
             .then((response) =>{
+                if (response.status < 203){
+                    loadMessages()
+                }
             })
     }
 
+
     useEffect(async ()=>{
-        console.log(props)
+
       await  api('http://dev1.itpw.ru:8004/chats/helpdesk_messages/?chat=' + props.chat.id)
           .then( (response)=>{
-              setMessages(response.data.results.reverse())
+              setMessages(response.data.results)
           })
     },[props])
+
+  async  function loadMessages() {
+    await    api('http://dev1.itpw.ru:8004/chats/helpdesk_messages/?chat=' + props.chat.id)
+            .then( (response)=>{
+                setMessages(response.data.results)
+            })
+    }
+
+
 
 
     return (
@@ -50,7 +63,7 @@ function Messenger(props) {
                     <span>{props.chat.name}</span>
                 </div>}
             {props.chat != null &&
-                <div className={'mess_main'}>
+                <div id={"chatterbox"} className={'mess_main'}>
 
                     {messages.map(message =>
                         <div key={message.id} className={!message.my ? 'message-block' : "message-block__my"}>
@@ -71,7 +84,7 @@ function Messenger(props) {
                     <textarea onChange={(e)=>{ setNewMessage(e.target.value) }} className={'footer_field'}></textarea>
                     <div className={'send-button'}>
                         <div onClick={sendNewMessage}>
-                        <img   src={sent} alt=""/></div>
+                        <img src={sent} alt=""/></div>
                     </div>
                 </div>}
 

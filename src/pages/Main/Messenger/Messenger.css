@@ -16,6 +16,10 @@
     height: 88%;
     background-image:url("../../../background-chat.jpg");
     overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    scroll-behavior: smooth;
+
 }
 .mess_footer{
     height: 6%;
@@ -68,7 +72,7 @@ img{
     pointer-events: none;
 }
 .message-block{
-    margin-top: 4px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
 }
@@ -79,13 +83,13 @@ img{
     margin-left: 8px;
     border-radius: 10px;
     background-color: rgb(255, 255, 255);
-    -webkit-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.19);
-    -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.19);
-    box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.15);
+    -webkit-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
+    -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
+    box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.09);
 }
 
 .message-block__my{
-    margin-top: 4px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -97,9 +101,9 @@ img{
     margin-right: 8px;
     border-radius: 10px;
     background-color: rgb(217, 253, 211);
-    -webkit-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.19);
-    -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.19);
-    box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.15);
+    -webkit-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
+    -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
+    box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.09);
     margin-left: 80%;
 }
 
