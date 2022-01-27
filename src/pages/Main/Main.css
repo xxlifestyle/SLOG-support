@@ -92,3 +92,22 @@ background-color: rgba(0, 0, 0, 0.05);
 margin-right: 10%;
 }
 
+.bell{
+    width: 15px;
+    height: 15px;
+}
+.bell-slash{
+    width: 18px;
+    height: 18px;
+}
+.subscribe-btn{
+    margin-right: 10%;
+    width: 10%;
+}
+.name-form{
+    width: 55%;
+}
+.unread{
+    width: 15%;
+}
+
