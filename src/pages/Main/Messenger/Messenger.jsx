@@ -23,7 +23,7 @@ function Messenger(props) {
 
     function fetchMessages() {
         if (noData == null){ return}
-        console.log('kek')
+
         api(nextPage)
             .then( (response)=>{
 
@@ -56,7 +56,7 @@ function Messenger(props) {
             })
     }
     async function sendNewMessageEnter(e) {
-        if (e.charCode == 13){
+        if (e.charCode === 13){
             ref.current.value = ""
         await  api.post('chats/helpdesk_messages/',{
             chat:props.chat.id,
@@ -72,9 +72,10 @@ function Messenger(props) {
         }
     }
 
-    useEffect(async ()=>{
-
-      await  api('chats/helpdesk_messages/?chat=' + props.chat.id)
+    useEffect( ()=>{
+        if (props.chat === null){return}
+async function fetchData(){
+       await api('chats/helpdesk_messages/?chat=' + props.chat.id)
           .then( (response)=>{
               setMessages(response.data.results)
                 setNextPage(response.data.next)
@@ -84,40 +85,45 @@ function Messenger(props) {
                     setNoData(true)
                 }
           })
-
+}
+fetchData()
     },[props])
-     useEffect(  async  ()=>{
-         if (connected == true){
-             ws.current.close(1000,"Поддержка сменила чат")
-             setConnected(false)
-         }
-         await api.post('chats/helpdesk_chat/'+ props.chat.id +'/subscribe/')
-         ws.current = new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
-         ws.current.onopen = () => {
-             setConnected(true)
-         };
-         ws.current.onmessage =  (res) => {
+     useEffect(()=>{
+         if (props.chat === null){return}
+         async function fetchData() {
+             if (connected === true){
+               await  ws.current.close(1000,"Поддержка сменила чат")
+                 await  setConnected(false)
+             }
+             await  api.post('chats/helpdesk_chat/'+ props.chat.id +'/subscribe/')
+             ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
+             ws.current.onopen = () => {
+                 setConnected(true)
+             };
+             ws.current.onmessage =  (res) => {
 
-            loadMessages()
-         }
-         ws.current.onerror = () =>{
-             setTimeout(connectToSocket, 3000)
-            }
-         ws.current.onclose = (res) => {
-
-
-             setConnected(false)
-             if (res.code != 1000) {
+                   loadMessages()
+             }
+             ws.current.onerror = () =>{
                  setTimeout(connectToSocket, 3000)
              }
+             ws.current.onclose = (res) => {
+
+
+                 setConnected(false)
+                 if (res.code !== 1000) {
+                     setTimeout(connectToSocket, 3000)
+                 }
+
+             }
+
 
          }
-
-
+         fetchData()
      },[props])
 
     function connectToSocket() {
-        if (connected == true){
+        if (connected === true){
             ws.current.close(1000,"Поддержка сменила чат")
             setConnected(false)
         }
@@ -136,7 +142,7 @@ function Messenger(props) {
         ws.current.onclose = (res) => {
 
             setConnected(false)
-            if (res.code != 1000) {
+            if (res.code !== 1000) {
                 setTimeout(connectToSocket, 3000)
             }
         }
@@ -164,7 +170,7 @@ function Messenger(props) {
 
         <div className={'mess-block'}>
             {props.chat == null &&
-                <img class={'empty-image'} src={Empty} alt=""/>
+                <img className={'empty-image'} src={Empty} alt=""/>
             }
             {props.chat != null &&
                 <div className={'mess_header mess-header_status'}>
@@ -194,7 +200,7 @@ function Messenger(props) {
 
 
                     {messages.map(message =>
-                        <div title={message._user.name} className={!message.my ? 'message-block' : "message-block__my"}>
+                        <div key={message.id} title={message._user.name} className={!message.my ? 'message-block' : "message-block__my"}>
                             <div className={!message.my ? 'message' : "message__my"}>
                                 <span>{message.text}</span>
                                 <sub>{message.created_localize}</sub>

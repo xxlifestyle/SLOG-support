@@ -17,21 +17,25 @@ const Main = () => {
     const [connected, setConnected] = useState(false)
 
 
-    useEffect(async ()=>{
-        if (localStorage.token == undefined || localStorage.token == null){
-        await    navigate("/login");
-        }
-        api('chats/helpdesk_chat')
-            .then((response)=>{
-                setChatData(response.data.results)
-                connectToSocket()
-            })
+    useEffect( ()=>{
+
+            if (localStorage.token === undefined || localStorage.token === null) {
+                      navigate("/login");
+            }
+              api('chats/helpdesk_chat')
+                .then((response) => {
+                    setChatData(response.data.results)
+                    connectToSocket()
+                })
+
+
     },[])
 
     function loadChats() {
         api('chats/helpdesk_chat')
             .then((response)=>{
                 setChatData(response.data.results)
+
             })
 
 
@@ -62,21 +66,18 @@ const Main = () => {
 
         ws.current = new WebSocket("ws://dev1.itpw.ru:8004/ws/new_messages/?tk=" + localStorage.getItem('token')); // создаем ws соединение
         ws.current.onopen = () => {
-            console.log('open')
             setConnected(true)
         };
-        ws.current.onmessage =  (res) => {
-            console.log(res)
+        ws.current.onmessage =  () => {
             loadChats()
         }
         ws.current.onerror = () =>{
-            setTimeout(connectToSocket, 3000)
+            setTimeout(connectToSocket, 5000)
         }
         ws.current.onclose = (res) => {
-            console.log('closed')
             setConnected(false)
-            if (res.code != 1000) {
-                setTimeout(connectToSocket, 3000)
+            if (res.code !== 1000) {
+                setTimeout(connectToSocket, 5000)
             }
         }
     }
@@ -88,7 +89,7 @@ const Main = () => {
 
 <div className={'chat-block'}>
     <div className={'mess_header main-header'}>
-        <img class={'slog-main'} src={logo} alt=""/><p>SLOG SUPPORT</p>
+        <img className={'slog-main'} src={logo} alt=""/><p>SLOG SUPPORT</p>
         {connected &&
             <div className={'connections-status-green'}></div>
         }
