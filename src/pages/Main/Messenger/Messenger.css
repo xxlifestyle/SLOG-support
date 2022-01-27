@@ -11,6 +11,7 @@
     background-color: rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
+
 }
 .mess_main{
     height: 88%;
@@ -77,16 +78,7 @@ img{
     align-items: center;
 }
 
-.message{
-    padding: 6px 7px 8px 9px;
-    width: fit-content;
-    margin-left: 8px;
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255);
-    -webkit-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
-    -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
-    box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.09);
-}
+
 
 .message-block__my{
     margin-bottom: 4px;
@@ -95,9 +87,35 @@ img{
     justify-content: flex-end;
 
 }
+
+.message{
+    padding: 6px 7px 8px 9px;
+
+    margin-left: 8px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    -webkit-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
+    -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
+    box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.09);
+    max-width: 70%;
+}
+
+.message sub{
+    white-space: nowrap;
+    text-align: end;
+    font-size: x-small;
+    align-self: flex-end;
+    color: rgb(102, 119, 129);
+}
+.message span{
+    word-break: break-all;
+    width: max-content;
+    margin-right: 8px;
+    height: fit-content;
+}
+
 .message__my{
     padding: 9px 8px 7px 6px;
-    width: fit-content;
     margin-right: 8px;
     border-radius: 10px;
     background-color: rgb(217, 253, 211);
@@ -105,6 +123,24 @@ img{
     -moz-box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.1);
     box-shadow: 4px 6px 7px 2px rgba(34, 60, 80, 0.09);
     margin-left: 80%;
+    display: flex;
+    justify-content: space-evenly;
+    width: auto;
+    max-width: 70%;
+
+}
+.message__my sub{
+white-space: nowrap;
+    text-align: end;
+font-size: x-small;
+    align-self: flex-end;
+    color: rgb(102, 119, 129);
+}
+.message__my span{
+    word-break: break-all;
+    width: max-content;
+    margin-right: 8px;
+    height: fit-content;
 }
 
 
@@ -115,4 +151,27 @@ img{
     height: 38px;
     margin-left: 16px;
     margin-right: 8px;
+}
+
+.connection-icons{
+margin-right: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.unconnected-icon{
+    width: 16px;
+    margin-left: 8px;
+}
+.connected-icon{
+    width: 16px;
+    margin-left: 8px;
+}
+.header-info{
+    display: flex;
+    align-items: center;
+}
+.mess-header_status{
+    justify-content: space-between;
+
 }

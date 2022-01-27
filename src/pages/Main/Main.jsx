@@ -46,7 +46,10 @@ const Main = () => {
              </div>
         <div className={'text-form'}>
             <p className={'name-form'}>{data.name}</p>
-            <p className={'species-form'}> {data.species}</p>
+            {data.unread_count != 0 &&
+            <div className={'undread-block'}>
+                {data.unread_count}
+            </div>}
         </div>
 
     </div>)}
