@@ -21,6 +21,15 @@
     flex-direction: column-reverse;
     scroll-behavior: smooth;
 
+
+}
+
+
+.chatterbox{
+    display: flex;
+    flex-direction: column-reverse;
+    height: 100%;
+    overflow: auto;
 }
 .mess_footer{
     height: 6%;

@@ -79,18 +79,7 @@ background-color: rgba(0, 0, 0, 0.05);
 .mess-footer{
     height: 10%;
 }
-.undread-block{
-    background-color: rgb(37, 211, 102);
-    color: white;
-    border-radius:50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-margin-right: 10%;
-}
+
 
 .bell{
     width: 15px;
@@ -103,11 +92,50 @@ margin-right: 10%;
 .subscribe-btn{
     margin-right: 10%;
     width: 10%;
+    cursor: pointer;
 }
 .name-form{
+
+}
+.name-zone{
     width: 55%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 .unread{
+    display: flex;
+    height: 100%;
     width: 15%;
+    justify-content: center;
+    align-items: center;
 }
+.unread-block{
+    background-color: rgb(37, 211, 102);
+    color: white;
+    border-radius:50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    margin-right: 10%;
+}
+.unread-zone{
 
+}
+.connections-status-green{
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: green;
+    margin-left: 6px;
+}
+.connections-status-red{
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: red;
+    margin-left: 6px;
+}

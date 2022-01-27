@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Container} from "@mui/material";
 import api from "../../api";
 import "./Main.css"
@@ -13,6 +13,9 @@ const Main = () => {
     const [chatData, setChatData] = useState([])
     let [selectedChat, setSelectedChat] = useState(null)
     const navigate = useNavigate()
+    const ws = useRef()
+    const [connected, setConnected] = useState(false)
+
 
     useEffect(async ()=>{
         if (localStorage.token == undefined || localStorage.token == null){
@@ -21,8 +24,62 @@ const Main = () => {
         api('chats/helpdesk_chat')
             .then((response)=>{
                 setChatData(response.data.results)
+                connectToSocket()
             })
     },[])
+
+    function loadChats() {
+        api('chats/helpdesk_chat')
+            .then((response)=>{
+                setChatData(response.data.results)
+            })
+
+
+    }
+
+    function unsubscribe(id,index){
+        api.post('chats/helpdesk_chat/'+ id + '/unsubscribe/')
+            .then((response)=>{
+                if (response.status <205){
+                    let newChatData = [...chatData]
+                    newChatData[index].participant = false
+                    setChatData(newChatData)
+                }
+            })
+    }
+    function subscribe(id, index){
+        api.post('chats/helpdesk_chat/'+ id + '/subscribe/')
+            .then((response) =>{
+        if (response.status <205){
+            let newChatData = [...chatData]
+            newChatData[index].participant = true
+            setChatData(newChatData)
+        }
+            })
+    }
+
+    function connectToSocket() {
+
+        ws.current = new WebSocket("ws://dev1.itpw.ru:8004/ws/new_messages/?tk=" + localStorage.getItem('token')); // создаем ws соединение
+        ws.current.onopen = () => {
+            console.log('open')
+            setConnected(true)
+        };
+        ws.current.onmessage =  (res) => {
+            console.log(res)
+            loadChats()
+        }
+        ws.current.onerror = () =>{
+            setTimeout(connectToSocket, 3000)
+        }
+        ws.current.onclose = (res) => {
+            console.log('closed')
+            setConnected(false)
+            if (res.code != 1000) {
+                setTimeout(connectToSocket, 3000)
+            }
+        }
+    }
     return (
 <div className={'chat-bg'}>
     <div className={'header-fake'}>
@@ -32,33 +89,44 @@ const Main = () => {
 <div className={'chat-block'}>
     <div className={'mess_header main-header'}>
         <img class={'slog-main'} src={logo} alt=""/><p>SLOG SUPPORT</p>
+        {connected &&
+            <div className={'connections-status-green'}></div>
+        }
+        {!connected &&
+            <div className={'connections-status-red'}></div>
+        }
     </div>
     <div>
-    {chatData.map(data =>
-        <div onClick={()=>{setSelectedChat(data)}} key={data.id} className={'chat-item'}>
-             <div className={'chat-img'}>
+    {chatData.map((data, index) =>
+        <div   key={data.id} className={'chat-item'}>
+             <div onClick={()=>{setSelectedChat(data)
+                 loadChats()}}  className={'chat-img'}>
 
-                 {data.helpdesk_user_photo != null &&
+                 {data.helpdesk_user_photo !== null &&
                      <img src={data.helpdesk_user_photo} alt=""/>
                  }
-                 {data.helpdesk_user_photo == null &&
+                 {data.helpdesk_user_photo === null &&
                      <img src={user} alt=""/>
                  }
              </div>
         <div className={'text-form'}>
-            <div className={'name-form'}>{data.name}</div>
-
-            <div className={'subscribe-btn'}>
-                { data.is_active == false &&
-            <div className={"bell"}><img src={Bell} alt=""/></div>
+            <div onClick={()=>{setSelectedChat(data)
+                loadChats()}} className={'name-zone'}>
+            <div  className={'name-form'}>{data.name}</div>
+            </div>
+            <div   className={'subscribe-btn'}>
+                { data.participant === false &&
+            <div  onClick={()=>{subscribe(data.id, index)}} className={"bell"}><img src={Bell} alt=""/></div>
                 }
-                {data.is_active == true &&
-                    <div className={"bell-slash"}><img src={BellSlash} alt=""/></div>
+                {data.participant === true &&
+                    <div onClick={()=>{unsubscribe(data.id, index)}} className={"bell-slash"}><img src={BellSlash} alt=""/></div>
                 }
             </div>
-            <div className={'unread'} >
-            {data.unread_count != 0 &&
-            <div className={'undread-block'} >
+
+            <div onClick={()=>{setSelectedChat(data)
+            loadChats()}}  className={'unread'} >
+            {data.unread_count !== 0 &&
+            <div className={'unread-block'} >
                 {data.unread_count}
             </div>}
             </div>
