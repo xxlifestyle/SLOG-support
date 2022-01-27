@@ -73,12 +73,15 @@ function Messenger(props) {
     }
 
     useEffect(async ()=>{
+
       await  api('chats/helpdesk_messages/?chat=' + props.chat.id)
           .then( (response)=>{
               setMessages(response.data.results)
                 setNextPage(response.data.next)
                 if(response.data.next !=null){
                     setNoData(false)
+                } else{
+                    setNoData(true)
                 }
           })
 
