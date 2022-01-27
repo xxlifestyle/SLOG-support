@@ -18,7 +18,7 @@ function Messenger(props) {
     let [noData, setNoData] = useState(false)
     let [nextPage, setNextPage] = useState(1)
     const ref = useRef()
-    const ws = useRef()
+    let ws = useRef()
 
 
     function fetchMessages() {
@@ -90,46 +90,19 @@ fetchData()
     },[props])
      useEffect(()=>{
          if (props.chat === null){return}
-         async function fetchData() {
-             if (connected === true){
-               await  ws.current.close(1000,"Поддержка сменила чат")
-                 await  setConnected(false)
-             }
-             await  api.post('chats/helpdesk_chat/'+ props.chat.id +'/subscribe/')
-             ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
-             ws.current.onopen = () => {
-                 setConnected(true)
-             };
-             ws.current.onmessage =  (res) => {
-
-                   loadMessages()
-             }
-             ws.current.onerror = () =>{
-                 setTimeout(connectToSocket, 3000)
-             }
-             ws.current.onclose = (res) => {
-
-
-                 setConnected(false)
-                 if (res.code !== 1000) {
-                     setTimeout(connectToSocket, 3000)
-                 }
-
-             }
-
+         connectToSocket()
+         return()=>{
+             ws.current.close(1000,'')
+             console.log('closed')
 
          }
-         fetchData()
      },[props])
 
-    function connectToSocket() {
-        if (connected === true){
-            ws.current.close(1000,"Поддержка сменила чат")
-            setConnected(false)
-        }
-        ws.current = new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
-        ws.current.onopen = () => {
+   async function connectToSocket() {
 
+        ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
+        ws.current.onopen = (res) => {
+            console.log(res)
             setConnected(true)
         };	// callback на ивент открытия соединения
         ws.current.onmessage =  (res) => {
@@ -140,11 +113,14 @@ fetchData()
             setTimeout(connectToSocket, 3000)
            }
         ws.current.onclose = (res) => {
-
+            console.log(res)
             setConnected(false)
             if (res.code !== 1000) {
                 setTimeout(connectToSocket, 3000)
             }
+        }
+        return()=>{
+            ws.current.close()
         }
     }
 
@@ -230,4 +206,4 @@ fetchData()
     );
 }
 
-export default Messenger;
+export default React.memo(Messenger);

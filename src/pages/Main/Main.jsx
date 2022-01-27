@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect,useMemo, useRef, useState} from 'react';
 import {Container} from "@mui/material";
 import api from "../../api";
 import "./Main.css"
@@ -142,4 +142,4 @@ const Main = () => {
     );
 };
 
-export default Main;
+export default React.memo(Main);
