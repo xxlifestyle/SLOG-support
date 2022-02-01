@@ -83,6 +83,7 @@ const Main = () => {
     }
     return (
 <div className={'chat-bg'}>
+    {console.log('render')}
     <div className={'header-fake'}>
     </div>
         <Container className={'chat-box_container'} maxWidth="xl">
@@ -98,6 +99,9 @@ const Main = () => {
         }
     </div>
     <div>
+        <div className={'search-block'}>
+            <input placeholder={'Поиск'} type="text" className={"search"}/>
+        </div>
     {chatData.map((data, index) =>
         <div   key={data.id} className={'chat-item'}>
              <div onClick={()=>{setSelectedChat(data)

@@ -119,9 +119,7 @@ fetchData()
                 setTimeout(connectToSocket, 3000)
             }
         }
-        return()=>{
-            ws.current.close()
-        }
+
     }
 
 
