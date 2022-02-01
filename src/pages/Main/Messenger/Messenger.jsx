@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import  "./Messenger.css"
 import sent from "../../../send.svg"
 import api from "../../../api";
@@ -90,15 +90,14 @@ fetchData()
     },[props])
      useEffect(()=>{
          if (props.chat === null){return}
-         connectToSocket()
          return()=>{
-             ws.current.close(1000,'')
+
              console.log('closed')
 
          }
      },[props])
 
-   async function connectToSocket() {
+   const connectToSocket = useCallback(async () => {
 
         ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
         ws.current.onopen = (res) => {
@@ -120,7 +119,7 @@ fetchData()
             }
         }
 
-    }
+    }, [props])
 
 
 

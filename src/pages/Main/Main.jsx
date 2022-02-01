@@ -22,7 +22,7 @@ const Main = () => {
             if (localStorage.token === undefined || localStorage.token === null) {
                       navigate("/login");
             }
-              api('chats/helpdesk_chat')
+              api('chats/helpdesk_chat/')
                 .then((response) => {
                     setChatData(response.data.results)
                     connectToSocket()
