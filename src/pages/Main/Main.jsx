@@ -1,5 +1,5 @@
 import React, {useEffect,useMemo, useRef, useState} from 'react';
-import {Container} from "@mui/material";
+import {Button, Container} from "@mui/material";
 import api from "../../api";
 import "./Main.css"
 import {useNavigate} from "react-router-dom";
@@ -12,6 +12,7 @@ import BellSlash from "../../bell-slash.svg"
 const Main = () => {
     const [chatData, setChatData] = useState([])
     let [selectedChat, setSelectedChat] = useState(null)
+    let [nextPage, setNextPage] = useState(null)
     const navigate = useNavigate()
     const ws = useRef()
     const [connected, setConnected] = useState(false)
@@ -26,6 +27,7 @@ const Main = () => {
                 .then((response) => {
                     setChatData(response.data.results)
                     connectToSocket()
+                    setNextPage(response.data.next)
                 })
 
 
@@ -62,16 +64,29 @@ const Main = () => {
             })
     }
 
+        async function fetchChats(){
+        console.log(nextPage)
+            await api(nextPage)
+                .then( (response)=>{
+                    setNextPage(response.data.next)
+                    setChatData(chatData.concat(response.data.results))
+                })
+        }
+
+
     function connectToSocket() {
 
         ws.current = new WebSocket("ws://dev1.itpw.ru:8004/ws/new_messages/?tk=" + localStorage.getItem('token')); // создаем ws соединение
         ws.current.onopen = () => {
+
             setConnected(true)
         };
         ws.current.onmessage =  () => {
+
             loadChats()
         }
         ws.current.onerror = () =>{
+
             setTimeout(connectToSocket, 5000)
         }
         ws.current.onclose = (res) => {
@@ -104,8 +119,7 @@ const Main = () => {
         </div>
     {chatData.map((data, index) =>
         <div   key={data.id} className={'chat-item'}>
-             <div onClick={()=>{setSelectedChat(data)
-                 loadChats()}}  className={'chat-img'}>
+             <div onClick={()=>{setSelectedChat(data)}}  className={'chat-img'}>
 
                  {data.helpdesk_user_photo !== null &&
                      <img src={data.helpdesk_user_photo} alt=""/>
@@ -115,8 +129,7 @@ const Main = () => {
                  }
              </div>
         <div className={'text-form'}>
-            <div onClick={()=>{setSelectedChat(data)
-                loadChats()}} className={'name-zone'}>
+            <div onClick={()=>{setSelectedChat(data)}} className={'name-zone'}>
             <div  className={'name-form'}>{data.name}</div>
             </div>
             <div   className={'subscribe-btn'}>
@@ -128,8 +141,7 @@ const Main = () => {
                 }
             </div>
 
-            <div onClick={()=>{setSelectedChat(data)
-            loadChats()}}  className={'unread'} >
+            <div onClick={()=>{setSelectedChat(data)}}  className={'unread'} >
             {data.unread_count !== 0 &&
             <div className={'unread-block'} >
                 {data.unread_count}
@@ -138,6 +150,7 @@ const Main = () => {
         </div>
 
     </div>)}
+        <Button className={'more-button'} onClick={fetchChats} color="success" variant="contained">Ещё</Button>
     </div>
 </div>
 <Messenger chat={selectedChat} ></Messenger>

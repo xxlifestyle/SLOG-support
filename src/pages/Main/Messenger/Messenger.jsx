@@ -90,8 +90,9 @@ fetchData()
     },[props])
      useEffect(()=>{
          if (props.chat === null){return}
+         connectToSocket()
          return()=>{
-
+             ws.current.close()
              console.log('closed')
 
          }
@@ -99,16 +100,17 @@ fetchData()
 
    const connectToSocket = useCallback(async () => {
 
-        ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
+        ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/helpdesk_chat/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
         ws.current.onopen = (res) => {
             console.log(res)
             setConnected(true)
         };	// callback на ивент открытия соединения
-        ws.current.onmessage =  (res) => {
-
+        ws.current.onmessage =  (mes) => {
+            console.log(mes)
             loadMessages()
         }
-        ws.current.onerror = () =>{
+        ws.current.onerror = (res) =>{
+            console.log(res)
             setTimeout(connectToSocket, 3000)
            }
         ws.current.onclose = (res) => {
@@ -181,7 +183,7 @@ fetchData()
                         </div>
                     )}
                     {!noData &&
-                        <Button onClick={fetchMessages} color="success" variant="contained">Больше</Button>
+                        <Button onClick={fetchMessages} color="success" variant="contained">Ещё</Button>
                     }
 
 

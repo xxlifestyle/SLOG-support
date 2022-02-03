@@ -36,19 +36,9 @@ function Login() {
 
 
   async  function login() {
-        if (codeSendHolder == false) {
          await   API.post('accounts/auth/admin/admin/', {
-                phone: loginHolder,
-                otc: passwordHolder
-            })
-                .then((response) => {
-                    setCodeSendHolder(true)
-                    setSnackbarStatus(true)
-                })
-        } else {
-         await   API.post('accounts/auth/admin/admin/', {
-                phone: loginHolder,
-                otc: passwordHolder
+                username: loginHolder,
+                password: passwordHolder
             })
                 .then(async (response) => {
                     await window.localStorage.setItem('token', response.data.token);
@@ -63,9 +53,6 @@ function Login() {
                  return
              })
         }
-    }
-
-
 
     return (
         <div className="app-login">
@@ -78,10 +65,8 @@ function Login() {
                     className={'form-input'}
                     required
                     id="outlined-required"
-                    label="Номер телефона"
+                    label="Логин"
                     size="small"
-                    disabled={codeSendHolder == true}
-
                 />
                 <TextField
                     onChange={(e)=>{ setPasswordHolder(e.target.value) }}
@@ -89,9 +74,7 @@ function Login() {
                     required
                     id="outlined-required"
                     label="Пароль"
-                    disabled={codeSendHolder == false}
                     size="small"
-
                 />
 
                 <Button onClick={login} className={'form-btn'} variant="contained">Send code</Button>
