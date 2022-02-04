@@ -87,6 +87,7 @@ fetchData()
     },[props])
     useEffect(()=>{
          console.log('kek')
+        console.log(ws)
          if (props.chat === null){return}
          connectToSocket()
          return()=>{
@@ -109,15 +110,19 @@ fetchData()
         }
         ws.current.onerror = (res) =>{
             console.log(res)
-            setTimeout(connectToSocket, 3000)
            }
         ws.current.onclose = (res) => {
             console.log(res)
             setConnected(false)
-            if (res.code !== 1000) {
+            if (res.wasClean !== true) {
                 setTimeout(connectToSocket, 3000)
             }
         }
+       return()=>{
+           ws.current.close()
+           console.log('closed')
+
+       }
 
     }, [props])
 
