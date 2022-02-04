@@ -1,5 +1,5 @@
 import React, {useEffect,useMemo, useRef, useState} from 'react';
-import {Button, Container} from "@mui/material";
+import {Button, Container, IconButton} from "@mui/material";
 import api from "../../api";
 import "./Main.css"
 import {useNavigate} from "react-router-dom";
@@ -8,36 +8,54 @@ import Messenger from "./Messenger/Messenger";
 import logo from "../../icon.png"
 import Bell from "../../bell.svg"
 import BellSlash from "../../bell-slash.svg"
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Main = () => {
     const [chatData, setChatData] = useState([])
     let [selectedChat, setSelectedChat] = useState(null)
     let [nextPage, setNextPage] = useState(null)
+    let [logoutBool, setLogoutBool] = useState(false)
+    let [noData, setNoData] = useState(false)
+    let [searchHolder, setSearchHolder] = useState('')
     const navigate = useNavigate()
     const ws = useRef()
     const [connected, setConnected] = useState(false)
 
 
     useEffect( ()=>{
-
             if (localStorage.token === undefined || localStorage.token === null) {
                       navigate("/login");
             }
               api('chats/helpdesk_chat/')
                 .then((response) => {
                     setChatData(response.data.results)
+                    if (response.data.next == null){
+                        setNoData(true)
+                    } else{
+                            setNoData(false)
+                        }
                     connectToSocket()
                     setNextPage(response.data.next)
                 })
-
-
     },[])
+    useEffect(()=>{
+        if (nextPage === null){
+            setNoData(true)
+        } else if (nextPage !== null){
+            setNoData(false)
+        }
+    },[nextPage])
 
     function loadChats() {
         api('chats/helpdesk_chat')
             .then((response)=>{
                 setChatData(response.data.results)
-
             })
 
 
@@ -64,14 +82,20 @@ const Main = () => {
             })
     }
 
-        async function fetchChats(){
-        console.log(nextPage)
+         async function fetchChats(){
             await api(nextPage)
                 .then( (response)=>{
                     setNextPage(response.data.next)
                     setChatData(chatData.concat(response.data.results))
                 })
         }
+    async function search(e){
+        if(e.charCode == 13){
+        await api('chats/helpdesk_chat/?search=' + searchHolder)
+            .then( (response)=>{
+                setChatData(response.data.results)
+            })} else {return}
+    }
 
 
     function connectToSocket() {
@@ -105,6 +129,7 @@ const Main = () => {
 
 <div className={'chat-block'}>
     <div className={'mess_header main-header'}>
+        <div className={'logo-status'}>
         <img className={'slog-main'} src={logo} alt=""/><p>SLOG SUPPORT</p>
         {connected &&
             <div className={'connections-status-green'}></div>
@@ -112,10 +137,14 @@ const Main = () => {
         {!connected &&
             <div className={'connections-status-red'}></div>
         }
+        </div>
+        <IconButton onClick={()=>{setLogoutBool(true)}} color="error" aria-label="upload picture" component="span">
+            <LogoutIcon />
+        </IconButton>
     </div>
     <div>
         <div className={'search-block'}>
-            <input placeholder={'Поиск'} type="text" className={"search"}/>
+            <input onKeyPress={search} placeholder={'Поиск'} type="text" className={"search"}/>
         </div>
     {chatData.map((data, index) =>
         <div   key={data.id} className={'chat-item'}>
@@ -150,10 +179,40 @@ const Main = () => {
         </div>
 
     </div>)}
-        <Button className={'more-button'} onClick={fetchChats} color="success" variant="contained">Ещё</Button>
+        {noData !== true &&
+            <Button className={'more-button'} onClick={fetchChats} color="success" variant="contained">Ещё</Button>
+        }
     </div>
 </div>
-<Messenger chat={selectedChat} ></Messenger>
+<Messenger key={selectedChat} chat={selectedChat} ></Messenger>
+
+            <Dialog
+                open={logoutBool}
+                onClose={()=>{setLogoutBool(false)}}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Выход из системы"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Вы уверены что хотите выйти?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=>{
+                        localStorage.clear()
+                    navigate("/login")
+                    }} autoFocus>
+                        Да
+                        </Button>
+
+                    <Button onClick={()=>{setLogoutBool(false)}}>Нет</Button>
+
+                </DialogActions>
+            </Dialog>
+
         </Container>
 </div>
     );

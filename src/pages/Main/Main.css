@@ -11,7 +11,12 @@
 }
 .main-header{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+.logo-status{
+    display: flex;
+    align-items: center;
 }
 .main-header p{
    margin-left: 8px;

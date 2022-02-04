@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import  "./Messenger.css"
 import sent from "../../../send.svg"
 import api from "../../../api";
@@ -48,10 +48,7 @@ function Messenger(props) {
         })
             .then((response) =>{
                 if (response.status < 203){
-
                     loadMessages()
-
-
                 }
             })
     }
@@ -74,8 +71,8 @@ function Messenger(props) {
 
     useEffect( ()=>{
         if (props.chat === null){return}
-async function fetchData(){
-       await api('chats/helpdesk_messages/?chat=' + props.chat.id)
+ function fetchData(){
+        api('chats/helpdesk_messages/?chat=' + props.chat.id)
           .then( (response)=>{
               setMessages(response.data.results)
                 setNextPage(response.data.next)
@@ -88,7 +85,8 @@ async function fetchData(){
 }
 fetchData()
     },[props])
-     useEffect(()=>{
+    useEffect(()=>{
+         console.log('kek')
          if (props.chat === null){return}
          connectToSocket()
          return()=>{
@@ -98,9 +96,9 @@ fetchData()
          }
      },[props])
 
-   const connectToSocket = useCallback(async () => {
+   const connectToSocket = useCallback( () => {
 
-        ws.current = await new WebSocket("ws://dev1.itpw.ru:8004/ws/helpdesk_chat/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
+        ws.current =  new WebSocket("ws://dev1.itpw.ru:8004/ws/chats/" + props.chat.id + '/?tk=' + localStorage.getItem('token')); // создаем ws соединение
         ws.current.onopen = (res) => {
             console.log(res)
             setConnected(true)
@@ -142,8 +140,7 @@ fetchData()
 
 
     return (
-
-        <div className={'mess-block'}>
+        <div key={props} className={'mess-block'}>
             {props.chat == null &&
                 <img className={'empty-image'} src={Empty} alt=""/>
             }
